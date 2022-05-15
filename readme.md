@@ -46,7 +46,7 @@ This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on y
 | fp16        |   0.365        |   0.556      |  
 | int8        |   0.361        |   0.555      |  
 
-##### YOLOv5s inference performance (batch = 1)
+##### YOLOv5s inference performance (batch = 1, input size 640 *640,Xavier AGX)
 Set Jetson maxium power model
 ```
  sudo nvpmodel -m0
