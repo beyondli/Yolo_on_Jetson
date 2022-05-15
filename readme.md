@@ -7,7 +7,7 @@ This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on y
 
 **NOTE** :  This repo is based on the release version(v5.0) of [yolov5](https://github.com/ultralytics/yolov5/).
 
-<div align="center"><img src="images/ds_video.git" width="640px"/></div>
+<div align="center"><img src="images/ds_video.gif" width="640px"/></div>
 
  
 ### Future updates
@@ -58,11 +58,12 @@ Set Jetson maxium power model
  /usr/src/tensorrt/bin/trtexec --loadEngine=weights/yolov5s_int8.engine
   
 ```
-|  Method | ms    | qps|  
-| ------------ | ------------ |  
-|   fp32|  17.3  |  56.5|  
-|   fp16|  7.4|   126.5|  
-|   int8|   7.5|   124.5|  
+
+| Method             | ms |  qps  |  
+|:------------------:| :-------------:|:------------:|  
+| fp32        |   17.3        |   56.5      |  
+| fp16        |   7.4        |   126.5      |  
+| int8        |   7.5        |   124.5      |  
 
 
 ### Basic usage
