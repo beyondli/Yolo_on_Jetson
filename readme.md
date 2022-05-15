@@ -7,7 +7,8 @@ This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on y
 
 **NOTE** :  This repo is based on the release version(v5.0) of [yolov5](https://github.com/ultralytics/yolov5/).
 
-<div align="center"><img src="images/ds_video.mp4" width="640px"/></div>
+<div align="center"><img src="images/ds_video.git" width="640px"/></div>
+
  
 ### Future updates
 
