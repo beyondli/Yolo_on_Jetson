@@ -7,11 +7,7 @@ This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on y
 
 **NOTE** :  This repo is based on the release version(v5.0) of [yolov5](https://github.com/ultralytics/yolov5/).
 
-```HTML
-<video width="640" height="320" controls>
-    <source src="images/ds_video.mp4" type="video/mp4">
-</video>
-```
+<div align="center"><img src="images/ds_video.mp4" width="640px"/></div>
  
 ### Future updates
 
@@ -222,5 +218,5 @@ CUDA_VER=10.2 make -C nvdsinfer_custom_impl_Yolo
 deepstream-app -c deepstream_app_config.txt
 ```
 ### 9. Reference
- [Nvidia Deepstream FAQ](https://forums.developer.nvidia.com/t/deepstream-sdk-faq/80236/3?u=mchi)
+ [Nvidia Deepstream FAQ](https://forums.developer.nvidia.com/t/deepstream-sdk-faq/80236/3?u=mchi)  
  [DeepStream-Yolo](https://github.com/marcoslucianops/DeepStream-Yolo)
