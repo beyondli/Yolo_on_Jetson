@@ -44,7 +44,7 @@ This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on y
 |:------------------:| :-------------:|:------------:|  
 | fp32        |   0.365        |   0.556      |  
 | fp16        |   0.365        |   0.556      |  
-| int8        |   0.361        |   0.555      |  
+| int8        |   0.344        |   0.538      |  
 
 ##### YOLOv5s inference performance (batch = 1, input size 640 *640,Xavier AGX)
 Set Jetson maxium power model
@@ -63,7 +63,7 @@ Set Jetson maxium power model
 |:------------------:| :-------------:|:------------:|  
 | fp32        |   17.3        |   56.5      |  
 | fp16        |   7.4        |   126.5      |  
-| int8        |   7.5        |   124.5      |  
+| int8        |   5.3        |   169.7      |  
 
 
 ### Basic usage
