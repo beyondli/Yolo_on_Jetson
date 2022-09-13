@@ -2,7 +2,7 @@
 
 ### Introduction
 
-This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on yolov5s).  PTQ, partial quantization will be supported step by step, and deploy yolov5s TensorRT engine model on deepstream6.0. Now test platform is Jetson.
+This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on yolov5s).  PTQ, partial quantization will be supported step by step, and deploy yolov5s TensorRT engine model on deepstream. Now test platform is Jetson.
 
 
 **NOTE** :  This repo is based on the release version(v5.0) of [yolov5](https://github.com/ultralytics/yolov5/).
@@ -15,13 +15,13 @@ This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on y
 * Partial quantization
 * Dynamic Shape Support
 * Sparse on Orin
-* JetPack 5.0  
+
 
 ### Test platform
 
-* Jetson Xavier AGX
-* JetPack 4.6.1(Rel 32.7.1)
-* Deepstream6.0
+* Jetson Xavier AGX / Orin AGX
+* JetPack 4.6.1(Rel 32.7.1) / JetPack 5.0.1 (Rel 34.1.1) 
+* Deepstream6.0 / Deepstream6.1
 * l4t-ml docker 
 
 
@@ -34,21 +34,33 @@ This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on y
 #### Jetson platform
 
 * [JetPack 4.6.1](https://developer.nvidia.com/jetpack-sdk-461)
+* [JetPack 5.0.1](https://developer.nvidia.com/embedded/jetpack-sdk-501dp)
 
  
 
 ##### YOLOv5s performance on Benchmarks(COCO)
+precision on Xaver AGX / Orin AGX  are identical except INT8(these should be caused by calibrated images are different)
 
 
-| Method             | mAPval 0.5:0.95 |  mAPval 0.5   |  
+Xavier AGX                              
+| Method             | mAPval 0.5:0.95 |  mAPval 0.5   |   
 |:------------------:| :-------------:|:------------:|  
 | fp32        |   0.365        |   0.556      |  
 | fp16        |   0.365        |   0.556      |  
 | int8        |   0.344        |   0.538      |  
 
-##### YOLOv5s inference performance (batch = 1, input size 640 *640,Xavier AGX)
+
+Orin AGX  
+| Method             | mAPval 0.5:0.95 |  mAPval 0.5   |  
+|:------------------:| :-------------:|:------------:|  
+| fp32        |   0.365        |   0.556      |  
+| fp16        |   0.365        |   0.556      |  
+| int8        |   0.357        |   0.552      |  
+
+##### YOLOv5s inference performance (batch = 1, input size 640 *640)
 Set Jetson maxium power model
 ```
+#set power model outside docker
  sudo nvpmodel -m0
  sudo jetson_clocks
 
@@ -59,12 +71,19 @@ Set Jetson maxium power model
   
 ```
 
+Xavier AGX
 | Method             | ms |  qps  |  
 |:------------------:| :-------------:|:------------:|  
 | fp32        |   17.3        |   56.5      |  
 | fp16        |   7.4        |   126.5      |  
 | int8        |   5.3        |   169.7      |  
 
+Orin AGX
+| Method             | ms |  qps  |  
+|:------------------:| :-------------:|:------------:|  
+| fp32        |   5.1        |   192.9      |  
+| fp16        |   2.8        |   346.6      |  
+| int8        |   2.4        |   406.9      |  
 
 ### Basic usage
 
@@ -86,7 +105,8 @@ mkdir data/COCO
 ##### Select 1000 random images from COCO dataset to run calibration
 
 copy select.py to COCO dataset,   
-make dir calibrate_random
+make dir calibrate_random,   
+make images DIR and unzip val2017.zip to it
 
 ![alt text](images/COCO.png)
 
@@ -101,8 +121,15 @@ sh select.sh
 It is recommended to use Docker Run these commands 
 
 ```
+#for Xavier AGX
 docker run --gpus all --name your-docker-name -it --net host  -v /your-local-
 path:/docker-map-path  nvcr.io/nvidia/l4t-ml:r32.6.1-py3   /bin/bash
+
+#for Orin AGX, please notice that docker version should be same with your host
+#if you flash 5.0.2 GA, you should use nvcr.io/nvidia/l4t-ml:r35.1.0-py3
+docker run --gpus all --name your-docker-name -it --net host  -v /your-local-
+path:/docker-map-path nvcr.io/nvidia/l4t-ml:r34.1.1-py3   /bin/bash
+
 ```
 *pre-requisite installation command when you log in docker before run any python code*  
 
@@ -138,7 +165,19 @@ wget https://github.com/ultralytics/yolov5/releases/download/v5.0/yolov5s.pt
 export.py exports a pytorch model to onnx format.
 
 ```
+#for Xaver AGX
 python3 models/export.py --weights  ./weights/yolov5s.pt --img 640 --batch 1 --device 0
+
+#for Orin AGX
+#modify /usr/local/lib/python3.8/dist-packages/torch/nn/modules/upsampling.py
+def forward(self, input: Tensor) -> Tensor:
+    #return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+    #                     recompute_scale_factor=self.recompute_scale_factor)
+    return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners)
+
+#then export model
+python3 models/export.py --weights  ./weights/yolov5s.pt --img 640 --batch 1
+
 ```
 
 onnx_to_trt.py aims to build a TensorRT engine from a onnx model file, and save to the weights folder.
@@ -174,6 +213,7 @@ python3 trt/eval_yolo_trt.py --model ./weights/yolov5s_int8.engine
 ### 7.Batch  test your TensorRT engine
 For quick test your engine, copy some images used for validation to Yolo_on_Jetson/quantization/images_test and run
 ```
+#result images saved at images_test/ret
 python3 trt/batch_test.py -m ./weights/yolov5s_fp16.engine
 ```
 Result image saved at images_test/ret directory
@@ -211,8 +251,13 @@ model-engine-file=./models/yolov5s_fp32.engine
 #### 8.2 Compile 
 **NOTE** : Deepstream test should be outside docker
 ```
+#for Xavier AGX
 cd Yolo_on_Jetson/deepstream
 CUDA_VER=10.2 make -C nvdsinfer_custom_impl_Yolo
+
+#for Orin AGX
+CUDA_VER=11.4 make -C nvdsinfer_custom_impl_Yolo
+
 ```
 #### 8.3 Run
 
