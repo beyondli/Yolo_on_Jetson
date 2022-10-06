@@ -20,7 +20,7 @@ This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on y
 ### Test platform
 
 * Jetson Xavier AGX / Orin AGX
-* JetPack 4.6.1(Rel 32.7.1) / JetPack 5.0.1 (Rel 34.1.1) 
+* JetPack 4.6.1(Rel 32.7.1) / JetPack 5.0.1 (Rel 34.1.1) / JetPack 5.0.2 (Rel 35.1.0)
 * Deepstream6.0 / Deepstream6.1
 * l4t-ml docker 
 
@@ -35,6 +35,7 @@ This is  Pytorch TensorRT quantization sample for Yolo series(Now only test on y
 
 * [JetPack 4.6.1](https://developer.nvidia.com/jetpack-sdk-461)
 * [JetPack 5.0.1](https://developer.nvidia.com/embedded/jetpack-sdk-501dp)
+* [JetPack 5.0.2](https://developer.nvidia.com/embedded/jetpack-sdk-502)
 
  
 
@@ -127,8 +128,14 @@ path:/docker-map-path  nvcr.io/nvidia/l4t-ml:r32.6.1-py3   /bin/bash
 
 #for Orin AGX, please notice that docker version should be same with your host
 #if you flash 5.0.2 GA, you should use nvcr.io/nvidia/l4t-ml:r35.1.0-py3
+
+#for 5.0.1 docker run  command
+
 docker run --gpus all --name your-docker-name -it --net host  -v /your-local-
 path:/docker-map-path nvcr.io/nvidia/l4t-ml:r34.1.1-py3   /bin/bash
+
+#for 5.0.2 docker run  command
+docker run --gpus all  --runtime nvidia --name your-docker-name -it --net host  -v /your-local-
 
 ```
 *pre-requisite installation command when you log in docker before run any python code*  
@@ -169,7 +176,7 @@ export.py exports a pytorch model to onnx format.
 python3 models/export.py --weights  ./weights/yolov5s.pt --img 640 --batch 1 --device 0
 
 #for Orin AGX
-#modify /usr/local/lib/python3.8/dist-packages/torch/nn/modules/upsampling.py
+#modify /usr/local/lib/python3.8/dist-packages/torch/nn/modules/upsampling.py line 152
 def forward(self, input: Tensor) -> Tensor:
     #return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
     #                     recompute_scale_factor=self.recompute_scale_factor)
