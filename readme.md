@@ -136,6 +136,7 @@ path:/docker-map-path nvcr.io/nvidia/l4t-ml:r34.1.1-py3   /bin/bash
 
 #for 5.0.2 docker run  command
 docker run --gpus all  --runtime nvidia --name your-docker-name -it --net host  -v /your-local-
+path:/docker-map-path nvcr.io/nvidia/l4t-ml:r35.1.0-py3   /bin/bash
 
 ```
 *pre-requisite installation command when you log in docker before run any python code*  
